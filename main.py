@@ -2,7 +2,7 @@ from base.graph import UndirectedGraph
 from partition.kernighan_lin import kl
 from partition.fiduccia_mattheyses import fm
 from base.hypergraph import HyperGraph
-
+from floorplan.test import TEST_CGP
 
 def gen_undirected_graph():
     # 创建一个复杂的无向图
@@ -103,4 +103,4 @@ def TEST_FM():
 
 
 if __name__ == '__main__':
-    TEST_FM()
+    TEST_CGP()

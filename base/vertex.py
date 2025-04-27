@@ -1,7 +1,7 @@
 from typing import Any, Dict, List
 from tools.id import id_generator
 from abc import ABC
-
+from .point import Point2D
 
 VIRTUAL_KEY = "__VIRTUAL__"
 
@@ -37,6 +37,15 @@ class Vertex:
         return self.key == VIRTUAL_KEY
 
 
+class CoordVertex(Vertex):
+    def __init__(self, key: Any, weight: float = 1, coord: Point2D = None):
+        super().__init__(key, weight)
+        self.coord = coord
+
+    def to_string(self):
+        return f"{self.key}({self.coord.x}, {self.coord.y})"
+
+
 class VertexManager:
     def __init__(self):
         self.id_vertex_map: Dict[int, Vertex] = {}
@@ -61,6 +70,22 @@ class VertexManager:
 
     def create_virtual_vertex(self):
         return self.create_vertex(VIRTUAL_KEY, 0)
+
+    def create_coord_vertex(self, key: Any, weight: float = 1, coord: Point2D = None, *args, **kwargs):
+        vertex = self.get_vertex_by_key(key)
+        if vertex is None:
+            vertex = CoordVertex(key, weight, coord)
+            for arg in args:
+                if isinstance(arg, dict):
+                    for key, value in arg.items():
+                        vertex.set_property(key, value)
+                else:
+                    vertex.set_property(str(len(vertex.data)), arg)
+
+            for key, value in kwargs.items():
+                vertex.set_property(key, value)
+            self.notify(vertex)
+        return vertex
 
     def notify(self, vertex: Vertex):
         self.id_vertex_map[vertex.id] = vertex

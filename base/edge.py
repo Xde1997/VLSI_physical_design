@@ -39,6 +39,15 @@ class EdgeManager(ABC):
         self.notify(v1_id, v2_id, edge)
         return edge
 
+    def delete_edge(self, edge_id: int):
+        del self.id_edge_map[edge_id]
+        delete_key = ""
+        for key in self.vertex_edge_map.keys():
+            if self.vertex_edge_map[key] == edge_id:
+                delete_key = key
+                break
+        del self.vertex_edge_map[delete_key]
+
     def notify(self, v1_id: int, v2_id: int, edge: 'Edge'):
         self.id_edge_map[edge.id] = edge
         key = self._make_key(v1_id, v2_id)
